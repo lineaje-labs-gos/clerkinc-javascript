@@ -37,14 +37,26 @@ const OrganizationPaymentAttemptPage = lazy(() =>
   })),
 );
 
-export const OrganizationProfileRoutes = () => {
+const OrganizationSecurityPage = lazy(() =>
+  import(/* webpackChunkName: "op-security-page"*/ './OrganizationSecurityPage').then(module => ({
+    default: module.OrganizationSecurityPage,
+  })),
+);
+
+type OrganizationProfileRoutesProps = {
+  contentRef: React.RefObject<HTMLDivElement>;
+};
+
+export const OrganizationProfileRoutes = ({ contentRef }: OrganizationProfileRoutesProps) => {
   const {
     pages,
     isMembersPageRoot,
     isGeneralPageRoot,
     isBillingPageRoot,
     isAPIKeysPageRoot,
+    isSecurityPageRoot,
     shouldShowBilling,
+    shouldShowSelfServeSSO,
     apiKeysProps,
   } = useOrganizationProfileContext();
 
@@ -142,6 +154,17 @@ export const OrganizationProfileRoutes = () => {
             </Route>
           </Protect>
         )}
+        {shouldShowSelfServeSSO ? (
+          <Route path={isSecurityPageRoot ? undefined : 'organization-security'}>
+            <Switch>
+              <Route index>
+                <Suspense fallback={''}>
+                  <OrganizationSecurityPage contentRef={contentRef} />
+                </Suspense>
+              </Route>
+            </Switch>
+          </Route>
+        ) : null}
       </Route>
     </Switch>
   );
