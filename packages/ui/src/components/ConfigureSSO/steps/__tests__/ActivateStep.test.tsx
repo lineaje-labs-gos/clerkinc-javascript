@@ -1,0 +1,118 @@
+import { ClerkRuntimeError } from '@clerk/shared/error';
+import type { ReactElement } from 'react';
+import { describe, expect, it, vi } from 'vitest';
+
+import { bindCreateFixtures } from '@/test/create-fixtures';
+import { render, screen, waitFor } from '@/test/utils';
+import { CardStateProvider } from '@/ui/elements/contexts';
+
+const setConnectionActive = vi.fn();
+const onExit = vi.fn();
+
+// The step reads the connection (id + domains), the activate mutation, and the
+// host `onExit` from context. `domains` is mutated per-test to exercise the
+// single- vs multi-domain warning interpolation.
+const contextState = vi.hoisted(() => ({
+  domains: ['clerk.com'] as string[],
+}));
+
+vi.mock('../../ConfigureSSOContext', () => ({
+  useConfigureSSO: () => ({
+    enterpriseConnection: { id: 'ent_1', domains: contextState.domains },
+    enterpriseConnectionMutations: { setConnectionActive },
+    onExit,
+  }),
+}));
+
+import { ActivateStep } from '../ActivateStep';
+
+const { createFixtures } = bindCreateFixtures('ConfigureSSO');
+
+const renderStep = (
+  wrapper: React.ComponentType<{ children?: React.ReactNode }>,
+  ui: ReactElement = <ActivateStep />,
+) => {
+  return render(<CardStateProvider>{ui}</CardStateProvider>, { wrapper });
+};
+
+const resetMocks = () => {
+  setConnectionActive.mockReset();
+  setConnectionActive.mockResolvedValue(undefined);
+  onExit.mockReset();
+  contextState.domains = ['clerk.com'];
+};
+
+describe('ActivateStep', () => {
+  it('renders the shield icon, heading, subtext, and both buttons', async () => {
+    resetMocks();
+    const { wrapper } = await createFixtures();
+    const { container } = renderStep(wrapper);
+
+    expect(screen.getByRole('heading', { name: 'SSO Configured' })).toBeInTheDocument();
+    expect(
+      screen.getByText(/you have successfully configured your sso connection\. sso remains deactivated\./i),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Activate SSO' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /skip for now/i })).toBeInTheDocument();
+    // The shield-check icon renders (asserted via its element descriptor — the
+    // SVG itself is stubbed to a <span> in the test transform).
+    expect(container.querySelector('.cl-configureSSOActivateIcon')).toBeInTheDocument();
+  });
+
+  it('interpolates a single domain into the warning copy', async () => {
+    resetMocks();
+    const { wrapper } = await createFixtures();
+    renderStep(wrapper);
+
+    expect(
+      screen.getByText('If Activated, all sign ins from clerk.com will be forced to use SSO going forward'),
+    ).toBeInTheDocument();
+  });
+
+  it('joins multiple domains in the warning copy', async () => {
+    resetMocks();
+    contextState.domains = ['clerk.com', 'clerk.dev'];
+    const { wrapper } = await createFixtures();
+    renderStep(wrapper);
+
+    expect(
+      screen.getByText('If Activated, all sign ins from clerk.com, clerk.dev will be forced to use SSO going forward'),
+    ).toBeInTheDocument();
+  });
+
+  it('activates the connection then exits when "Activate SSO" is clicked', async () => {
+    resetMocks();
+    setConnectionActive.mockResolvedValue({ id: 'ent_1', active: true } as any);
+    const { wrapper } = await createFixtures();
+    const { userEvent } = renderStep(wrapper);
+
+    await userEvent.click(screen.getByRole('button', { name: 'Activate SSO' }));
+
+    await waitFor(() => expect(setConnectionActive).toHaveBeenCalledWith('ent_1', true));
+    await waitFor(() => expect(onExit).toHaveBeenCalledTimes(1));
+  });
+
+  it('surfaces the error and does not exit when activation fails', async () => {
+    resetMocks();
+    setConnectionActive.mockRejectedValue(new ClerkRuntimeError('Activation failed', { code: 'activation_failed' }));
+    const { wrapper } = await createFixtures();
+    const { userEvent } = renderStep(wrapper);
+
+    await userEvent.click(screen.getByRole('button', { name: 'Activate SSO' }));
+
+    await waitFor(() => expect(setConnectionActive).toHaveBeenCalledWith('ent_1', true));
+    await screen.findByText(/activation failed/i);
+    expect(onExit).not.toHaveBeenCalled();
+  });
+
+  it('exits without mutating when "Skip for now" is clicked', async () => {
+    resetMocks();
+    const { wrapper } = await createFixtures();
+    const { userEvent } = renderStep(wrapper);
+
+    await userEvent.click(screen.getByRole('button', { name: /skip for now/i }));
+
+    expect(onExit).toHaveBeenCalledTimes(1);
+    expect(setConnectionActive).not.toHaveBeenCalled();
+  });
+});
