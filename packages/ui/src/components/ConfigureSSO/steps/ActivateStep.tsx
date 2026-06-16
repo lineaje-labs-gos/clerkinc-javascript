@@ -1,6 +1,6 @@
 import { Button, Col, descriptors, Flex, Flow, Heading, Icon, localizationKeys, Text } from '@/customizables';
 import { useCardState } from '@/elements/contexts';
-import { ChevronRight, ShieldCheck } from '@/icons';
+import { ChevronRight, DuotoneShieldCheck } from '@/icons';
 import { Alert } from '@/ui/elements/Alert';
 import { handleError } from '@/utils/errorHandler';
 
@@ -56,7 +56,7 @@ export const ActivateStep = (): JSX.Element => {
             >
               <Icon
                 elementDescriptor={descriptors.configureSSOActivateIcon}
-                icon={ShieldCheck}
+                icon={DuotoneShieldCheck}
                 size='lg'
                 colorScheme='neutral'
               />
