@@ -11,7 +11,7 @@ const onExit = vi.fn();
 
 // The step reads the connection (id + domains), the activate mutation, and the
 // host `onExit` from context. `domains` is mutated per-test to exercise the
-// single- vs multi-domain warning interpolation.
+// single- vs multi-domain subtitle interpolation.
 const contextState = vi.hoisted(() => ({
   domains: ['clerk.com'] as string[],
 }));
@@ -48,10 +48,7 @@ describe('ActivateStep', () => {
     const { wrapper } = await createFixtures();
     const { container } = renderStep(wrapper);
 
-    expect(screen.getByRole('heading', { name: 'SSO Configured' })).toBeInTheDocument();
-    expect(
-      screen.getByText(/you have successfully configured your sso connection\. sso remains deactivated\./i),
-    ).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'SSO connection configured' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Activate SSO' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /skip for now/i })).toBeInTheDocument();
     // The shield-check icon renders (asserted via its element descriptor — the
@@ -59,24 +56,22 @@ describe('ActivateStep', () => {
     expect(container.querySelector('.cl-configureSSOActivateIcon')).toBeInTheDocument();
   });
 
-  it('interpolates a single domain into the warning copy', async () => {
+  it('interpolates a single domain into the subtitle copy', async () => {
     resetMocks();
     const { wrapper } = await createFixtures();
     renderStep(wrapper);
 
-    expect(
-      screen.getByText('If Activated, all sign ins from clerk.com will be forced to use SSO going forward'),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/anyone signing in with clerk\.com must use your identity provider/i)).toBeInTheDocument();
   });
 
-  it('joins multiple domains in the warning copy', async () => {
+  it('joins multiple domains in the subtitle copy', async () => {
     resetMocks();
     contextState.domains = ['clerk.com', 'clerk.dev'];
     const { wrapper } = await createFixtures();
     renderStep(wrapper);
 
     expect(
-      screen.getByText('If Activated, all sign ins from clerk.com, clerk.dev will be forced to use SSO going forward'),
+      screen.getByText(/anyone signing in with clerk\.com, clerk\.dev must use your identity provider/i),
     ).toBeInTheDocument();
   });
 

@@ -196,7 +196,7 @@ describe('ConfigureSSO', () => {
       const { findByText, queryByText } = render(<ConfigureSSO />, { wrapper });
 
       // An active connection lands on the activate step even if never tested.
-      await findByText(/sso configured/i);
+      await findByText(/sso connection configured/i);
       expect(queryByText(/select your identity provider/i)).not.toBeInTheDocument();
     });
 
@@ -241,7 +241,7 @@ describe('ConfigureSSO', () => {
       // Configured + inactive + no successful run ⇒ lands on the test step, not
       // activate.
       await findByText(/test your sso connection/i);
-      expect(queryByText(/sso configured/i)).not.toBeInTheDocument();
+      expect(queryByText(/sso connection configured/i)).not.toBeInTheDocument();
     });
 
     it('mounts on activate for a configured-but-inactive connection that has a successful test run', async () => {
@@ -285,8 +285,8 @@ describe('ConfigureSSO', () => {
 
       const { findByText, queryByText } = render(<ConfigureSSO />, { wrapper });
 
-      // Lands on the activate step ("SSO Configured" renders), not the test step.
-      await findByText(/sso configured/i);
+      // Lands on the activate step ("SSO connection configured" renders), not the test step.
+      await findByText(/sso connection configured/i);
       expect(queryByText(/test your sso connection/i)).not.toBeInTheDocument();
     });
   });

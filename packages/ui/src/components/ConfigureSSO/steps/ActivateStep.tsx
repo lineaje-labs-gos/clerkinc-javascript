@@ -16,7 +16,7 @@ export const ActivateStep = (): JSX.Element => {
   const card = useCardState();
 
   // The activate step is only reachable with a configured connection, so the
-  // domains are set; join multiples for the warning copy.
+  // domains are set; join multiples for the subtitle copy.
   const domain = (enterpriseConnection?.domains ?? []).join(', ');
 
   const handleActivate = async (): Promise<void> => {
@@ -74,15 +74,9 @@ export const ActivateStep = (): JSX.Element => {
                   elementDescriptor={descriptors.configureSSOActivateSubtitle}
                   as='p'
                   colorScheme='secondary'
-                  localizationKey={localizationKeys('configureSSO.activate.subtitle')}
+                  localizationKey={localizationKeys('configureSSO.activate.subtitle', { domain })}
                 />
               </Col>
-
-              <Alert
-                variant='warning'
-                sx={{ width: '100%' }}
-                title={localizationKeys('configureSSO.activate.warning', { domain })}
-              />
 
               {card.error && (
                 <Alert

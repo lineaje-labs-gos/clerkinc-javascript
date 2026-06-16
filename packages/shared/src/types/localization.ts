@@ -1821,8 +1821,7 @@ export type __internal_LocalizationResource = {
     };
     activate: {
       title: LocalizationValue;
-      subtitle: LocalizationValue;
-      warning: LocalizationValue<'domain'>;
+      subtitle: LocalizationValue<'domain'>;
       activateButton: LocalizationValue;
       skipButton: LocalizationValue;
     };

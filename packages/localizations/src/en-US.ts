@@ -212,9 +212,9 @@ export const enUS: LocalizationResource = {
   },
   configureSSO: {
     activate: {
-      title: 'SSO Configured',
-      subtitle: 'You have successfully configured your SSO connection. SSO remains deactivated.',
-      warning: 'If Activated, all sign ins from {{domain}} will be forced to use SSO going forward',
+      title: 'SSO connection configured',
+      subtitle:
+        'Your SSO connection is ready. Once activated, anyone signing in with {{domain}} must use your identity provider.',
       activateButton: 'Activate SSO',
       skipButton: 'Skip for now',
     },

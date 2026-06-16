@@ -243,7 +243,7 @@ describe('ConfigureSSO wizard navigation (integration)', () => {
     const { findByText, getByText } = render(<ConfigureSSO />, { wrapper });
 
     // The activate step body renders (active connection short-circuits to it).
-    await findByText(/sso configured/i);
+    await findByText(/sso connection configured/i);
 
     // The stepper carries the renamed labels (select-provider stays unlabelled).
     expect(getByText('Domains')).toBeInTheDocument();
