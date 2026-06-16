@@ -45,14 +45,14 @@ export const ActivateStep = (): JSX.Element => {
       >
         <Step.Body>
           <Step.Section
+            elementDescriptor={descriptors.configureSSOActivate}
             fill
+            gap={5}
             sx={{ alignItems: 'center', justifyContent: 'center' }}
           >
             <Col
-              elementDescriptor={descriptors.configureSSOActivate}
               align='center'
-              gap={4}
-              sx={{ textAlign: 'center', maxWidth: '26rem' }}
+              sx={t => ({ textAlign: 'center', maxWidth: '332px', gap: t.space.$3x5 })}
             >
               <Icon
                 elementDescriptor={descriptors.configureSSOActivateIcon}
@@ -63,7 +63,7 @@ export const ActivateStep = (): JSX.Element => {
 
               <Col
                 align='center'
-                gap={1}
+                gap={2}
               >
                 <Heading
                   elementDescriptor={descriptors.configureSSOActivateTitle}
@@ -85,39 +85,39 @@ export const ActivateStep = (): JSX.Element => {
                   title={card.error}
                 />
               )}
-
-              <Flex
-                align='center'
-                gap={3}
-              >
-                <Button
-                  elementDescriptor={descriptors.configureSSOActivateButton}
-                  variant='solid'
-                  size='sm'
-                  isLoading={card.isLoading}
-                  onClick={() => void handleActivate()}
-                  localizationKey={localizationKeys('configureSSO.activate.activateButton')}
-                />
-
-                <Button
-                  elementDescriptor={descriptors.configureSSOActivateSkipButton}
-                  variant='outline'
-                  size='sm'
-                  isDisabled={card.isLoading}
-                  onClick={() => onExit?.()}
-                >
-                  <Text
-                    as='span'
-                    localizationKey={localizationKeys('configureSSO.activate.skipButton')}
-                  />
-                  <Icon
-                    icon={ChevronRight}
-                    size='sm'
-                    sx={t => ({ marginInlineStart: t.space.$1 })}
-                  />
-                </Button>
-              </Flex>
             </Col>
+
+            <Flex
+              align='center'
+              gap={4}
+            >
+              <Button
+                elementDescriptor={descriptors.configureSSOActivateButton}
+                variant='solid'
+                size='sm'
+                isLoading={card.isLoading}
+                onClick={() => void handleActivate()}
+                localizationKey={localizationKeys('configureSSO.activate.activateButton')}
+              />
+
+              <Button
+                elementDescriptor={descriptors.configureSSOActivateSkipButton}
+                variant='outline'
+                size='sm'
+                isDisabled={card.isLoading}
+                onClick={() => onExit?.()}
+              >
+                <Text
+                  as='span'
+                  localizationKey={localizationKeys('configureSSO.activate.skipButton')}
+                />
+                <Icon
+                  icon={ChevronRight}
+                  size='sm'
+                  sx={t => ({ marginInlineStart: t.space.$1 })}
+                />
+              </Button>
+            </Flex>
           </Step.Section>
         </Step.Body>
       </Step>
