@@ -1367,6 +1367,12 @@ export type __internal_LocalizationResource = {
       };
       warning: LocalizationValue;
     };
+    changeProviderDialog: {
+      title: LocalizationValue<'provider'>;
+      subtitle: LocalizationValue<'provider' | 'currentProvider'>;
+      cancelButton: LocalizationValue;
+      confirmButton: LocalizationValue;
+    };
     organizationDomainsStep: {
       title: LocalizationValue;
       subtitle: LocalizationValue;
