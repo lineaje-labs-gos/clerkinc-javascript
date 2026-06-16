@@ -21,9 +21,6 @@ export const ConfigureSSOWizard = ({ title, forceInitialStep, ...props }: Config
   const steps = React.useMemo<WizardStepConfig[]>(
     () => [
       { id: 'verify-domain', label: 'Verify domain' },
-      // `select-provider` now lives inside `configure` as its first sub-step, so
-      // reaching `configure` only requires verified domains (fresh start) or an
-      // existing connection (resume / change-provider).
       { id: 'configure', label: 'Configure', guard: () => allDomainsVerified || c.hasConnection },
       { id: 'test', label: 'Test', guard: () => c.hasMinimumConfiguration || c.isActive },
       { id: 'confirmation', label: 'Confirmation', guard: () => c.hasSuccessfulTestRun || c.isActive },
