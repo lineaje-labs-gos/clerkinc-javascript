@@ -9,16 +9,18 @@ import { CardStateProvider } from '@/ui/elements/contexts';
 const setConnectionActive = vi.fn();
 const onExit = vi.fn();
 
-// The step reads the connection (id + domains), the activate mutation, and the
-// host `onExit` from context. `domains` is mutated per-test to exercise the
-// single- vs multi-domain subtitle interpolation.
+// The step reads the connection (id + domains), the organizationEnterpriseConnection
+// domain object (isActive), the activate mutation, and the host `onExit` from
+// context. Fields are mutated per-test.
 const contextState = vi.hoisted(() => ({
   domains: ['clerk.com'] as string[],
+  isActive: false,
 }));
 
 vi.mock('../../ConfigureSSOContext', () => ({
   useConfigureSSO: () => ({
     enterpriseConnection: { id: 'ent_1', domains: contextState.domains },
+    organizationEnterpriseConnection: { isActive: contextState.isActive },
     enterpriseConnectionMutations: { setConnectionActive },
     onExit,
   }),
@@ -40,6 +42,7 @@ const resetMocks = () => {
   setConnectionActive.mockResolvedValue(undefined);
   onExit.mockReset();
   contextState.domains = ['clerk.com'];
+  contextState.isActive = false;
 };
 
 describe('ActivateStep', () => {
@@ -109,5 +112,42 @@ describe('ActivateStep', () => {
 
     expect(onExit).toHaveBeenCalledTimes(1);
     expect(setConnectionActive).not.toHaveBeenCalled();
+  });
+
+  describe('already-active variant', () => {
+    it('renders the active heading and domain-interpolated subtitle', async () => {
+      resetMocks();
+      contextState.isActive = true;
+      const { wrapper } = await createFixtures();
+      renderStep(wrapper);
+
+      expect(screen.getByRole('heading', { name: 'SSO connection is active' })).toBeInTheDocument();
+      expect(
+        screen.getByText(/anyone signing in with clerk\.com must use your identity provider/i),
+      ).toBeInTheDocument();
+    });
+
+    it('shows only the Done button — no Activate SSO, no Skip for now', async () => {
+      resetMocks();
+      contextState.isActive = true;
+      const { wrapper } = await createFixtures();
+      renderStep(wrapper);
+
+      expect(screen.getByRole('button', { name: 'Done' })).toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: 'Activate SSO' })).not.toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: /skip for now/i })).not.toBeInTheDocument();
+    });
+
+    it('calls onExit when Done is clicked', async () => {
+      resetMocks();
+      contextState.isActive = true;
+      const { wrapper } = await createFixtures();
+      const { userEvent } = renderStep(wrapper);
+
+      await userEvent.click(screen.getByRole('button', { name: 'Done' }));
+
+      expect(onExit).toHaveBeenCalledTimes(1);
+      expect(setConnectionActive).not.toHaveBeenCalled();
+    });
   });
 });

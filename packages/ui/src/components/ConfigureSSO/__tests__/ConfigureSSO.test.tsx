@@ -195,8 +195,8 @@ describe('ConfigureSSO', () => {
 
       const { findByText, queryByText } = render(<ConfigureSSO />, { wrapper });
 
-      // An active connection lands on the activate step even if never tested.
-      await findByText(/sso connection configured/i);
+      // An active connection lands on the activate-step's already-active variant.
+      await findByText(/sso connection is active/i);
       expect(queryByText(/select your identity provider/i)).not.toBeInTheDocument();
     });
 
@@ -285,7 +285,7 @@ describe('ConfigureSSO', () => {
 
       const { findByText, queryByText } = render(<ConfigureSSO />, { wrapper });
 
-      // Lands on the activate step ("SSO connection configured" renders), not the test step.
+      // Lands on the activate step (not-active variant: "SSO connection configured" renders).
       await findByText(/sso connection configured/i);
       expect(queryByText(/test your sso connection/i)).not.toBeInTheDocument();
     });

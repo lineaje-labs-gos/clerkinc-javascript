@@ -217,6 +217,9 @@ export const enUS: LocalizationResource = {
         'Your SSO connection is ready. Once activated, anyone signing in with {{domain}} must use your identity provider.',
       activateButton: 'Activate SSO',
       skipButton: 'Skip for now',
+      activeTitle: 'SSO connection is active',
+      activeSubtitle: 'Anyone signing in with {{domain}} must use your identity provider.',
+      doneButton: 'Done',
     },
     missingManageEnterpriseConnectionsPermission: {
       subtitle: "Contact your organization's administrator to upgrade your permissions.",

@@ -10,6 +10,7 @@ import { Step } from '../elements/Step';
 export const ActivateStep = (): JSX.Element => {
   const {
     enterpriseConnection,
+    organizationEnterpriseConnection,
     enterpriseConnectionMutations: { setConnectionActive },
     onExit,
   } = useConfigureSSO();
@@ -18,6 +19,7 @@ export const ActivateStep = (): JSX.Element => {
   // The activate step is only reachable with a configured connection, so the
   // domains are set; join multiples for the subtitle copy.
   const domain = (enterpriseConnection?.domains ?? []).join(', ');
+  const isActive = organizationEnterpriseConnection.isActive;
 
   const handleActivate = async (): Promise<void> => {
     if (!enterpriseConnection || card.isLoading) {
@@ -68,13 +70,18 @@ export const ActivateStep = (): JSX.Element => {
                 <Heading
                   elementDescriptor={descriptors.configureSSOActivateTitle}
                   textVariant='h2'
-                  localizationKey={localizationKeys('configureSSO.activate.title')}
+                  localizationKey={localizationKeys(
+                    isActive ? 'configureSSO.activate.activeTitle' : 'configureSSO.activate.title',
+                  )}
                 />
                 <Text
                   elementDescriptor={descriptors.configureSSOActivateSubtitle}
                   as='p'
                   colorScheme='secondary'
-                  localizationKey={localizationKeys('configureSSO.activate.subtitle', { domain })}
+                  localizationKey={localizationKeys(
+                    isActive ? 'configureSSO.activate.activeSubtitle' : 'configureSSO.activate.subtitle',
+                    { domain },
+                  )}
                 />
               </Col>
 
@@ -87,37 +94,48 @@ export const ActivateStep = (): JSX.Element => {
               )}
             </Col>
 
-            <Flex
-              align='center'
-              gap={4}
-            >
+            {isActive ? (
               <Button
                 elementDescriptor={descriptors.configureSSOActivateButton}
                 variant='solid'
+                colorScheme='secondary'
                 size='sm'
-                isLoading={card.isLoading}
-                onClick={() => void handleActivate()}
-                localizationKey={localizationKeys('configureSSO.activate.activateButton')}
-              />
-
-              <Button
-                elementDescriptor={descriptors.configureSSOActivateSkipButton}
-                variant='outline'
-                size='sm'
-                isDisabled={card.isLoading}
                 onClick={() => onExit?.()}
+                localizationKey={localizationKeys('configureSSO.activate.doneButton')}
+              />
+            ) : (
+              <Flex
+                align='center'
+                gap={4}
               >
-                <Text
-                  as='span'
-                  localizationKey={localizationKeys('configureSSO.activate.skipButton')}
-                />
-                <Icon
-                  icon={ChevronRight}
+                <Button
+                  elementDescriptor={descriptors.configureSSOActivateButton}
+                  variant='solid'
                   size='sm'
-                  sx={t => ({ marginInlineStart: t.space.$1 })}
+                  isLoading={card.isLoading}
+                  onClick={() => void handleActivate()}
+                  localizationKey={localizationKeys('configureSSO.activate.activateButton')}
                 />
-              </Button>
-            </Flex>
+
+                <Button
+                  elementDescriptor={descriptors.configureSSOActivateSkipButton}
+                  variant='outline'
+                  size='sm'
+                  isDisabled={card.isLoading}
+                  onClick={() => onExit?.()}
+                >
+                  <Text
+                    as='span'
+                    localizationKey={localizationKeys('configureSSO.activate.skipButton')}
+                  />
+                  <Icon
+                    icon={ChevronRight}
+                    size='sm'
+                    sx={t => ({ marginInlineStart: t.space.$1 })}
+                  />
+                </Button>
+              </Flex>
+            )}
           </Step.Section>
         </Step.Body>
       </Step>

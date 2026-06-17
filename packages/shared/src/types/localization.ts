@@ -1824,6 +1824,9 @@ export type __internal_LocalizationResource = {
       subtitle: LocalizationValue<'domain'>;
       activateButton: LocalizationValue;
       skipButton: LocalizationValue;
+      activeTitle: LocalizationValue;
+      activeSubtitle: LocalizationValue<'domain'>;
+      doneButton: LocalizationValue;
     };
   };
   apiKeys: {
