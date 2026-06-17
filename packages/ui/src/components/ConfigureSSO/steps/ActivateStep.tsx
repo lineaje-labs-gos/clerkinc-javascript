@@ -52,7 +52,7 @@ export const ActivateStep = (): JSX.Element => {
           >
             <Col
               align='center'
-              sx={t => ({ textAlign: 'center', maxWidth: '332px', gap: t.space.$3x5 })}
+              sx={t => ({ textAlign: 'center', maxWidth: '20.75rem', gap: t.space.$3x5 })}
             >
               <Icon
                 elementDescriptor={descriptors.configureSSOActivateIcon}
