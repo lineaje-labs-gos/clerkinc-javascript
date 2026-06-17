@@ -57,8 +57,8 @@ export const ActivateStep = (): JSX.Element => {
               <Icon
                 elementDescriptor={descriptors.configureSSOActivateIcon}
                 icon={DuotoneShieldCheck}
-                size='lg'
                 colorScheme='neutral'
+                sx={t => ({ width: t.sizes.$8, height: t.sizes.$8 })}
               />
 
               <Col
