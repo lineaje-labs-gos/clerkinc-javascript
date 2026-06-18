@@ -6,7 +6,13 @@
     ]
   },
   "license": "MIT",
-  "version": "0.0.0",
+  "contributors": [
+    {
+      "name": "Lineaje DepFixer",
+      "email": "221268890+Lineaje-DepFixer@users.noreply.github.com"
+    }
+  ],
+  "version": "4.10.12-lineaje-01",
   "private": true,
   "packageManager": "npm@8.5.0",
   "engines": {
@@ -70,5 +76,9 @@
     "release:snapshot": "TURBO_CONCURRENCY=4 npm run build && npx changeset publish --tag snapshot --no-git-tag",
     "release:staging": "TURBO_CONCURRENCY=4 npm run build && npx changeset publish --tag staging --no-git-tag",
     "update:lockfile": "npm run nuke && npm install -D --arch=x64 --platform=linux turbo && npm install -D --arch=arm64 --platform=darwin turbo"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lineaje-labs-gos/clerkinc-javascript"
   }
 }
